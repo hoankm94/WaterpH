@@ -1,0 +1,292 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{xcolor}
+\usepackage{lipsum} % For placeholder text (remove in final version)
+\graphicspath{{images/}}
+\bibliographystyle{ieeetr}
+
+\title{Development of a Near-Infrared Spectroscopic System for Non-Invasive pH Monitoring in Water}
+
+\author{\IEEEauthorblockN{Duy-Khanh Nguyen, Viet-Hoang Ha, Huy-Hoang Vo}
+\IEEEauthorblockA{
+% Department/School
+% Institution
+% City, Country
+}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction}
+Water pH, an essential indicator of acidity or alkalinity, is vital for numerous natural and industrial processes involving water. Proper pH balance is crucial for the health of aquatic ecosystems, the effectiveness of industrial operations, the success of agricultural practices, and healthcare quality. In environmental monitoring, shifts in water pH can have significant consequences. Ocean acidification, driven by CO2 absorption, poses a serious threat to marine life, especially shellfish and coral reefs \cite{mollica2018ocean}. The documented decline in calcification rates among marine organisms due to increased acidity emphasizes the urgency of this challenge. In freshwater environments, acid rain and industrial discharges can alter pH levels, impacting aquatic survival and reproduction \cite{vreca2017impact}. In agriculture, the pH of irrigation water directly affects nutrient availability and plant growth \cite{minhas2020irrigation}. Different crops have specific pH requirements for optimal yields, and inappropriate pH can result in reduced water infiltration and poor soil quality. These instances illustrate the substantial effects of water pH across various sectors. However, traditional pH measurement techniques, such as litmus paper and pH meters, often necessitate direct sample contact, which can lead to contamination, maintenance issues, and limited automation. These challenges have prompted the exploration of alternative non-invasive pH monitoring methods. This paper presents a non-invasive approach utilizing near-infrared (NIR) spectroscopy, which offers benefits such as reduced contamination risk, minimal maintenance needs, and the potential for real-time automated monitoring.
+
+NIR spectroscopy is an analytical technique that employs the near-infrared region of the electromagnetic spectrum (typically 780-2500 nm) to analyze a sample's molecular composition. NIR light interacts with molecular bonds, causing vibrations at specific frequencies, with absorption characteristics indicative of the types and quantities of bonds present. In aqueous solutions, the NIR spectrum is primarily influenced by the absorption bands of water molecules, arising from overtones and combinations of the O-H bond's fundamental vibrational modes. Variations in the chemical environment, such as pH changes, can alter the hydrogen bonding network in water, resulting in subtle shifts in the NIR absorption spectrum. 
+
+Numerous studies have investigated the application of Near-Infrared (NIR) spectroscopy for pH measurement across various matrices. The fundamental principle is that pH variations affect the hydrogen bonding network and the vibrational modes of water molecules, leading to measurable shifts in the NIR absorption spectrum. Analyzing these spectral changes allows for the development of predictive models that link NIR spectral data to the pH values of samples. Previous research has highlighted the efficacy of NIR spectroscopy in pH measurement within fields such as Process Analytical Technology (PAT), environmental monitoring, and the food and beverage sector. For example, NIR spectroscopy has been utilized for real-time pH monitoring and control in pharmaceutical and chemical manufacturing processes \cite{li2020simultaneous}. In environmental studies, it has been employed to assess the pH of natural waters, including seawater and wastewater \cite{yang2019rapid}. Additionally, NIR spectroscopy has been used to monitor pH during food processing and quality assurance in the food and beverage industry \cite{tetsuta2019prediction}.
+
+Despite these encouraging findings, challenges persist in creating robust and precise models for pH prediction from complex NIR spectral data. A primary challenge is spectral overlap, as NIR spectra frequently display broad, overlapping bands, complicating the isolation of specific contributions from different chemical species \cite{zhang2021deep}. Another challenge is the sensitivity of NIR spectra to physical parameters such as temperature, particle size, and sample homogeneity, which may obscure the relationship between spectral features and pH \cite{du2018spectral}. Lastly, the development of accurate and reliable predictive models necessitates meticulous calibration and validation with independent datasets, a vital component of analytical method development, especially for intricate NIR data \cite{zhu2023chemometrics}.
+
+\section{Methodology}
+
+\subsection{System Design and Hardware Implementation}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=8cm]{images/System_Design.eps}
+    \caption{Overall System Design}
+    \label{sys_des}
+\end{figure}
+
+The proposed system consists of two parts: the algorithm of the software for detecting pH value and the hardware of the system, with the main controller being the Raspberry Pi 4 Model B. The total estimated cost of the system for non-invasive pH monitoring in water is less than 250 US dollars. The hardware components for pH measurement comprise of:
+
+The embedded computer used in the system is the Raspberry Pi 4 Model B, which serves as the central processing unit. It receives signals from the optical sensor, applies a machine learning model to predict the pH value, and displays the result on an OLED screen.
+
+With its low cost and suitable wavelength range, the AS7265x NIR spectral sensor is employed to detect wavelengths from 410 nm to 940 nm across 18 channels, including 410 nm, 435 nm, 460 nm, 485 nm, 510 nm, 535 nm, 560 nm, 585 nm, 610 nm, 645 nm, 680 nm, 705 nm, 730 nm, 760 nm, 810 nm, 860 nm, 900 nm, and 940 nm. The data is transmitted to the embedded computer via the I2C protocol.
+
+The Halogen Light Phillips W5W T10, emitting wavelengths from 350 nm to 2500 nm, is used as the system's light source. The OLED SSD1306 is utilized to display the predicted pH value.
+
+The sensor and light source are contained in a specially designed enclosure made of black mica. This design minimizes external light interference, allowing only the light from the halogen lamp to be transmitted through the water and reach the sensor. The components are strategically arranged to maintain a stable and controlled optical path, ensuring reliable and consistent data collection.
+
+\subsection{Data Acquisition}
+A dataset of 500 water samples was prepared, covering a pH range from 3.08 to 9.10. This range encompasses a wide spectrum of acidity and alkalinity levels relevant to various applications.
+
+\subsubsection{Sample Preparation}
+Each water sample was prepared by adding tap water into a transparent mica box measuring 46x124x62 mm with a thickness of 2 mm. Each sample contained approximately 280 ml of water with a standard initial pH of 7.5.
+
+To achieve the desired pH range, a pH-modifying solution containing Bacillus licheniformis at a concentration of 1.0 x $10^6$ CFU/ml was used. This solution was diluted with 1.2 liters of water and gradually added to the water samples in 1 ml increments. Bacillus licheniformis was chosen due to its well-documented metabolic activity that results in a predictable and stable change in pH over time. It is important to note that while Bacillus licheniformis introduces a biological agent, its concentration is kept low, and the primary spectral changes are still expected to arise from the altered hydrogen bonding network of water due to pH variations.
+
+\subsubsection{Reference pH Measurements}
+Reference pH values for each water sample were obtained using a calibrated pH meter with a resolution of 0.01 and an accuracy of $\pm$0.05. The pH meter was calibrated with a pH 4.00 buffer solution before each measurement session to ensure accuracy.
+
+\subsubsection{NIR Spectral Data Acquisition}
+The halogen light source was used to illuminate the water samples. The light transmitted through the sample was then captured by the AS7265x multi-spectral sensor. The sensor acquired spectral data across 18 wavelengths ranging from 410 nm to 940 nm.
+
+The data acquisition process is illustrated in Figure \ref{data_acq}. This systematic approach ensures that the collected data is accurate, reliable, and suitable for subsequent analysis and model development.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=8cm]{images/Data collecting.pdf}
+    \caption{Data Acquisition Process}
+    \label{data_acq}
+\end{figure}
+
+\subsection{Data Preprocessing}
+The raw Near-Infrared (NIR) spectral data collected from the AS7265x sensor underwent two preprocessing techniques aimed at enhancing signal quality and improving the accuracy of subsequent machine learning models. These techniques include the Standard Normal Variate (SNV) transformation and Savitzky-Golay (Savgol) filtering.
+
+\subsubsection{Standard Normal Variate (SNV)}
+The Standard Normal Variate (SNV) is a prevalent preprocessing method in spectroscopy, particularly effective in reducing the effects of light scattering and baseline variations in spectral data \cite{zhang2022enhancing}. These variations often arise from intrinsic physical differences among samples, such as particle size, density, and inconsistencies in the optical path length during measurements. The objective of SNV is to standardize each spectrum, thereby minimizing the influence of these physical variations and highlighting the critical chemical information necessary for precise pH evaluation.
+
+The application of SNV to each spectrum in a dataset entails two primary steps: centering and scaling. The process begins with centering, where the mean absorbance value of the spectrum is subtracted from each data point. This is followed by scaling, in which each centered data point is divided by the standard deviation of the entire spectrum. Consequently, each spectrum is transformed to possess a mean of zero and a standard deviation of one. The SNV transformed spectrum, represented as $x_{snv}$, is derived from a given spectrum depicted as a vector $x$, with each element $x_i$ corresponding to the absorbance at wavelength $i$. The calculation of $x_{snv}$ is performed using the following equation.
+
+\begin{equation}
+    x_{snv,i} = \frac{x_i - \bar{x}}{s_x} \label{snv_eq}
+\end{equation}
+
+where:
+
+\begin{itemize}
+    \item $x_{snv, i}$ represents the absorbance transformed through Standard Normal Variate (SNV) at wavelength $i$.
+    \item $x_i$ is the original absorbance at wavelength $i$.
+    \item $\bar{x}$ is the mean absorbance of the spectrum, and $s_x$ is the standard deviation of the spectrum.
+\end{itemize}
+
+\subsubsection{Savitzky-Golay (Savgol) Filter}
+The Savitzky-Golay (Savgol) filter is a well-established digital signal processing technique utilized for smoothing spectral data, thereby improving the signal-to-noise ratio (SNR) while maintaining the integrity of the underlying signal \cite{zhang2022enhancing}. This method is particularly advantageous for accurate analysis in near-infrared (NIR) spectroscopy. It operates by fitting a polynomial to a sliding window of data points within a spectrum, subsequently replacing the central point with the value derived from the fitted polynomial. This approach effectively reduces random noise while preserving the shape and essential characteristics of spectral peaks, which is vital for retaining information regarding the sample's chemical composition.
+
+The Savgol filter can be understood as a weighted moving average. The smoothed spectrum, represented as $x_{savgol}$, is derived by applying a specific formula to each data point $x_i$ in the original spectrum $x$. The resulting output from the Savgol filter is expressed through the following equation:
+
+\begin{equation}
+    x_{savgol,i} = \sum_{j=-m}^{m} C_j \cdot x_{i+j} \label{savgol_eq}
+\end{equation}
+
+where:
+
+\begin{itemize}
+    \item $x_{savgol,i}$ is the smoothed value at data point $i$.
+    \item $C_j$ are obtained through least-squares fitting of a polynomial of a defined order to the data points within a specified sliding window. The values of $C_j$ are dependent upon the selected polynomial order and the size of the window.
+    \textcolor{red}{Is specific polynomial order and window size required to be mentioned?}
+    \item $x_{i+j}$ represents the original data points within the window centered at data point $i$.
+    \item $m$ is the half-width of the window, defining the window size as $2m + 1$.
+\end{itemize}
+
+\subsubsection{Feature Selection}
+
+
+\subsection{Machine Learning Models}
+Two machine learning models, Gaussian Process Regression (GPR) and Random Forest (RF), were utilized for predicting pH levels. These models were selected due to their proficiency in managing complex, non-linear relationships and high-dimensional data, which are typical of Near-Infrared (NIR) spectral data.
+
+\subsubsection{Gaussian Process Regression (GPR)}
+Gaussian Process Regression (GPR) is a non-parametric, Bayesian regression method \cite{liu2020advances}. Within the Bayesian framework, it integrates prior knowledge with observed data to derive a posterior distribution. Instead of adhering to a fixed functional form like linearity, GPR utilizes a kernel function to define a prior distribution over functions, reflecting assumptions about the function's smoothness and characteristics. In NIR spectroscopy, a Gaussian Process (GP) models the relationship between NIR spectral wavelengths and pH values. By employing training data that pairs NIR spectra with their respective pH values, GPR enhances the prior distribution based on the observed data. This refined distribution is then used to predict pH values for new spectra, while also offering estimates of uncertainty.
+
+The predictive distribution for a new input point $x*$ in GPR is a Gaussian distribution with a mean $\mu(x*)$ and variance $\sigma^2(x*)$. These are calculated as follows (Equation \ref{gpr_mean}):
+
+\begin{equation}
+    \mu(x*) = k*^T (K + \sigma_n^2 I)^{-1} y \label{gpr_mean}
+\end{equation}
+
+where:
+
+\begin{itemize}
+    \item $x*$ is the new input point (wavelength).
+    \item $k*$ is the vector of covariances between the new input point $x*$ and all training input points, computed using the kernel function:
+    \begin{equation}
+        k* = [k(x*, x_1), k(x*, x_2), ..., k(x*, x_n)]^T
+    \end{equation}
+    \item $K$ is the kernel matrix (covariance matrix), where each element $K_{ij} = k(x_i, x_j)$ represents the covariance between training input points $x_i$ and $x_j$, calculated using the chosen kernel function.
+    \item $\sigma_n^2$ is the noise variance, representing the assumed noise level in the observed target values.
+    \item $I$ is the identity matrix.
+    \item $y$ is the vector of observed target values (pH) in the training data.
+\end{itemize}
+
+Gaussian Process Regression (GPR) demonstrates significant efficacy in modeling Near-Infrared NIR spectral data and predicting pH levels. Its effectiveness arises from the ability to capture non-linear relationships, incorporate prior knowledge through the kernel function, and provide uncertainty estimates. The selection of an appropriate kernel function is critical, as it affects the characteristics of the functions that can be learned. While common options include the Radial Basis Function (RBF) and Rational Quadratic (RQ) kernels, this study selected the Spectral Mixture (SM) kernel, which was fine-tuned to effectively model functions exhibiting complex, multi-frequency patterns \cite{yan2023spectral}.
+
+
+\subsubsection{Random Forest (RF)}
+Random Forest (RF) is an ensemble learning technique that generates multiple decision trees during the training process, subsequently averaging their predictions for regression tasks. This algorithm is robust and adaptable, making it suitable for various applications, including the analysis of complex datasets such as NIR spectral data.
+
+Each decision tree within a Random Forest is constructed using a bootstrap sample of the training data, which involves random sampling with replacement. Furthermore, at each tree node, only a random selection of features (in this context, wavelengths) is evaluated for potential splits. This approach injects randomness into the tree construction, reduces correlation among the individual trees, and minimizes the overall model's variance. For predictions, each tree in the forest independently forecasts the output (pH), and these individual predictions are averaged to output the final result.
+
+The prediction of a Random Forest for a new input point $x*$ can be shown as follows (Equation \ref{rf_eq}):
+
+\begin{equation}
+\hat{y}(x*) = \frac{1}{T} \sum_{t=1}^{T} h_t(x*) \label{rf_eq}
+\end{equation}
+
+where:
+
+\begin{itemize}
+    \item $\hat{y}(x*)$ is the predicted pH value for the new input point $x*$.
+    \item $T$ is the total number of trees in the forest.
+    \item $h_t(x*)$ is the prediction of the $t$-th decision tree for the input point $x*$.
+\end{itemize}
+
+Random Forest is highly effective for modeling near-infrared (NIR) spectral data and predicting pH levels due to its ability to capture complex, non-linear relationships, manage high-dimensional data, model interactions among wavelengths, mitigate overfitting, and inherently conduct feature selection \cite{belgiu2016random}.
+
+\subsection{Model Evaluation Metrics}
+The performance of the GPR and RF models was evaluated using two key metrics: R-squared (R$^2$) and Root Mean Squared Error (RMSE).
+
+\subsubsection{R-squared (R$^2$)}
+The R-squared (R$^2$) score, or coefficient of determination, quantifies the proportion of variance in the dependent variable (pH) explained by the independent variables (NIR spectral data). This metric serves as an indicator of the model's goodness of fit, with values between 0 and 1. A higher R$^2$ score signifies a superior fit, with 1 denoting a perfect fit in which the model accounts for all variability in the target variable.
+
+R$^2$ is calculated as follows (Equation \ref{r2_eq}):
+
+\begin{equation}
+R^2 = 1 - \frac{SS_{res}}{SS_{tot}} \label{r2_eq}
+\end{equation}
+
+where:
+
+\begin{itemize}
+    \item $SS_{res}$ is the sum of squares of residuals (the difference between the observed and predicted values.
+    \item $SS_{tot}$ is the total sum of squares (the difference between the observed values and the mean of the observed values).
+    \item $n$ is the number of samples.
+    \item $y_i$ is the true value of the $i$-th sample.
+    \item $\hat{y}_i$ is the predicted value for the $i$-th sample.
+    \item $\bar{y}$ is the mean of the true values.
+\end{itemize}
+
+\subsubsection{Root Mean Squared Error (RMSE)}
+The Root Mean Squared Error (RMSE) quantifies the average magnitude of errors between predicted and actual values, serving as an indicator of the model's predictive accuracy. Lower RMSE values signify enhanced accuracy. Additionally, RMSE is expressed in the same units as the target variable (pH), enabling clear interpretation.
+
+RMSE is calculated as follows (Equation \ref{rmse_eq}):
+
+\begin{equation}
+RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2} \label{rmse_eq}
+\end{equation}
+
+where:
+
+\begin{itemize}
+    \item $n$ is the number of observations.
+    \item $y_i$ is the actual value for the $i$-th observation.
+    \item $\hat{y}_i$ is the predicted value for the $i$-th observation.
+\end{itemize}
+
+In this research, both R$^2$ and RMSE will be used to comprehensively evaluate and compare the performance of the developed GPR and RF models.
+
+\section{Results and Discussion}
+\subsection{Dataset Summary and Descriptive Statistics}
+The dataset for this study consisted of 500 water samples, each defined by 18 spectral absorbance values measured at specific wavelengths from 410 nm to 940 nm, along with their respective reference pH values. The spectral data were obtained using the AS7265x spectral sensor, while the reference pH values were measured with a calibrated pH meter.
+
+\textcolor{red}{NẾU SỬA CÁI BẢNG THÌ SỬA LẠI GIÚP T PHẦN NÀY LUÔN NGHE}
+\textcolor{purple}{Figure \ref{tab:descriptive_stats} presents a comprehensive overview of the dataset, detailing the mean, standard deviation, minimum, and maximum values for each spectral feature (wavelength) and the pH.}
+
+
+
+\begin{table}[ht]
+\centering%
+\caption{Statistics of pH measurement}
+\begin{tabular}{c c c}
+\hline \hline \\ [-1.5ex]
+Statistic                  & Training & Testing \\ [1ex] \hline \\ [-1ex]
+A number of samples          & 400      & 100       \\ 
+Minimum             & 3.1       & 3.08       \\ 
+Maximum             & 9.1      & 9       \\ 
+Mean                & 6.3   & 6.32       \\ 
+Standard deviation & 1.59    & 1.82      \\ [0.5ex] \hline
+\end{tabular}
+\label{tab2}
+\end{table}
+
+\textcolor{red}{Add graph, and add Table and graph explanation}
+
+\subsection{Model Performance and Comparison}
+The GPR and RF models were trained on the preprocessed NIR spectral data to predict pH values. Their performance was evaluated using R-squared (R$^2$) and Root Mean Squared Error (RMSE).
+
+\textcolor{red}{R2 and RMSE for both models with comparison}
+
+\begin{table}[ht]
+\centering
+\caption{Performance Comparison of GPR and RF Models}
+\label{tab:model_performance}
+\begin{tabular}{lcc}
+\toprule
+Model & R$^2$ & RMSE \\
+\midrule
+GPR &  &  \\
+RF &  &  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textcolor{red}{\begin{itemize}
+    \item Compare the performance of the GPR and RF models based on their R² and RMSE values.
+    \item Discuss which model performed better and provide possible explanations for the observed differences.
+    \item Analyze the impact of data preprocessing (SNV and Savgol filtering) on model performance. Did preprocessing improve the results? If so, how?
+    \item If performed feature selection (e.g., selecting a subset of wavelengths), discuss its effect on model accuracy.
+    \item Relate your findings to the existing literature on NIR spectroscopy for pH measurement.
+    \item Discuss any limitations of the current study and potential areas for improvement.
+\end{itemize}}
+
+\section{Conclusion}
+This paper presented the development and evaluation of a novel, non-invasive system for monitoring water pH using near-infrared (NIR) spectroscopy coupled with machine learning. The system utilizes an AS7265x NIR sensor, a halogen light source, and a Raspberry Pi 4B for data acquisition, processing, and display. A comprehensive dataset of 500 water samples with pH values ranging from 3.08 to 9.10 was acquired, and the spectral data were preprocessed using Standard Normal Variate (SNV) and Savitzky-Golay (Savgol) filtering to enhance signal quality.
+
+Two machine learning models, Gaussian Process Regression (GPR) and Random Forest (RF), were trained to predict pH values from the preprocessed NIR spectra. The models were evaluated using R-squared (R$^2$) and Root Mean Squared Error (RMSE), demonstrating the feasibility of using NIR spectroscopy for accurate and non-invasive pH monitoring.
+
+\textcolor{red}{Summarize key findings regarding model performance, the impact of preprocessing, and feature selection (if applicable)}
+
+The results of this study highlight the potential of NIR spectroscopy as a powerful tool for non-invasive pH monitoring in various applications, including environmental monitoring, industrial process control, agriculture, and healthcare. The developed system offers several advantages over conventional pH measurement methods, such as reduced contamination risk, minimal maintenance, and the potential for real-time, automated monitoring.
+
+\section{Future Work}
+Future research will focus on further improving the accuracy and robustness of the developed system. This includes:
+
+\begin{itemize}
+    \item \textbf{Exploring Deep Learning Models:} Investigating the use of deep learning techniques, such as Convolutional Neural Networks (CNNs) and Recurrent Neural Networks (RNNs), for feature extraction and pH prediction from NIR spectral data. Deep learning models have shown promise in handling complex, high-dimensional data and may further enhance the accuracy of pH prediction.
+    \item \textbf{Expanding Wavelength Range:} Extending the spectral range beyond the current 410-940 nm to include a broader portion of the NIR region. This could potentially provide additional information related to pH variations and improve model accuracy.
+    \item \textbf{Developing a User-Friendly Interface:} Creating a more intuitive and user-friendly interface for the system, allowing for easy operation and data interpretation by non-experts.
+\end{itemize}
+
+By addressing these areas, the developed NIR spectroscopy-based system can be further refined and optimized, paving the way for its broader adoption as a reliable and efficient tool for non-invasive pH monitoring across diverse fields.
+
+\bibliography{ph}
+
+\end{document}
